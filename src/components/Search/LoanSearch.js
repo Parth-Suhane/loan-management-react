@@ -25,24 +25,24 @@ const LoanSearch = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setState(search);
         setIsSubmitted(true);
-        setShowResults(true);
     };
 
     useEffect(() => {
         if (isSubmitted) {
-            setIsSubmitted(false)
             Axios.post('http://localhost:8010/loan-api/searchLoan', state)
                 .then(response => {
                     if (response.status === 200) {
                         let data = JSON.stringify(response.data);
                         setLoan(data);
+                        setShowResults(true);
                     }
                 })
                 .catch(error => {
                     console.log(error)
-                })
+                });
+            setState(search);
+            setIsSubmitted(false)
         }
 
     }, [isSubmitted])
@@ -73,7 +73,7 @@ const LoanSearch = () => {
                                 </Form>
                             </Card.Header>
                             <Card.Body>
-                                {showResults ? <LoanSearchTable loan={loan} /> : null}
+                                {showResults ? <LoanSearchTable loan={loan || null} /> : null}
                             </Card.Body>
                         </Card>
                     </Col>
@@ -98,13 +98,13 @@ const LoanSearchTable = ({ loan }) => {
                 </tr>
             </thead>
             <tbody>
-                {loan.map(item => {
-                    <tr key={loanNumber}>
-                        <td>{loan.id}</td>
-                        <td>{loan.borrowerName}</td>
-                        <td>{loan.loanNumber}</td>
-                        <td>{loan.loanAmount}</td>
-                        <td><Button href="/update:{loan.id}">Update</Button></td>
+                {loan.map((item) => {
+                    <tr key={item.loanNumber}>
+                        <td>{item.loanNumber}</td>
+                        <td>{item.borrowerName}</td>
+                        <td>{item.loanNumber}</td>
+                        <td>{item.loanAmount}</td>
+                        <td><Button href="/update:{item.loanNumber}">Update</Button></td>
                     </tr>
                 })}
             </tbody>
