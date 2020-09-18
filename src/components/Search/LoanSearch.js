@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Card, Col, Table } from 'react-bootstrap';
 import Header from '../Header/Header';
 import Axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const LoanSearch = () => {
     const search = {
@@ -30,12 +31,15 @@ const LoanSearch = () => {
 
     useEffect(() => {
         if (isSubmitted) {
-            Axios.post('http://localhost:8010/loan-api/searchLoan', state)
+            Axios.post('http://localhost:8765/loan/loan-api/loan/search', state)
                 .then(response => {
                     if (response.status === 200) {
-                        let data = JSON.stringify(response.data);
+                        let data = response.data;
                         setLoan(data);
                         setShowResults(true);
+                    }
+                    else{
+                        
                     }
                 })
                 .catch(error => {
@@ -86,6 +90,7 @@ const LoanSearch = () => {
 
 
 const LoanSearchTable = ({ loan }) => {
+    console.log(loan);
     return (
         <Table striped bordered hover>
             <thead>
@@ -99,13 +104,15 @@ const LoanSearchTable = ({ loan }) => {
             </thead>
             <tbody>
                 {loan.map((item) => {
-                    <tr key={item.loanNumber}>
-                        <td>{item.loanNumber}</td>
+                     return ( 
+                    <tr key={item.loanId}>
+                        <td>{item.loanId}</td>
                         <td>{item.borrowerName}</td>
-                        <td>{item.loanNumber}</td>
+                        <td>{item.loanId}</td>
                         <td>{item.loanAmount}</td>
-                        <td><Button href="/update:{item.loanNumber}">Update</Button></td>
+                        <td><Link to={{ pathname: '/update', state: { loanDetail: item } }}>Update</Link></td>
                     </tr>
+                     )
                 })}
             </tbody>
         </Table>
@@ -113,10 +120,3 @@ const LoanSearchTable = ({ loan }) => {
 }
 
 export default LoanSearch;
-
-
-{/* <table>
-  {this.state.orderDetails.map((item =>
-  <tr><td key={item.OrderID}>{item.CustomerID}</td></tr>
-  ))}
-</table> */}
