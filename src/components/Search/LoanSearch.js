@@ -39,7 +39,7 @@ const LoanSearch = () => {
                         setShowResults(true);
                     }
                     else{
-                        
+
                     }
                 })
                 .catch(error => {
