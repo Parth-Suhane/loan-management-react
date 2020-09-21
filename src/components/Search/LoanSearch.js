@@ -26,7 +26,12 @@ const LoanSearch = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setIsSubmitted(true);
+        if(state.borrowerName === "" && state.loanAmount=== "" && state.loanNumber===""){
+            alert("Empty Search Fields");
+        }
+        else{
+            setIsSubmitted(true);
+        }
     };
 
     useEffect(() => {
@@ -35,11 +40,17 @@ const LoanSearch = () => {
                 .then(response => {
                     if (response.status === 200) {
                         let data = response.data;
+                        console.log(data);
+                        if(data.message === "No Search Results"){
+                            alert("No Search Results");
+                        }
+                        else{
                         setLoan(data);
                         setShowResults(true);
+                        }
                     }
                     else{
-
+                        
                     }
                 })
                 .catch(error => {
