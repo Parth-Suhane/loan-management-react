@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Card, Col, Table } from 'react-bootstrap';
-import Header from '../Header/Header';
 import Axios from 'axios';
 import { Link } from 'react-router-dom';
+import Header from '../Header/Header';
 
 const LoanSearch = () => {
     const search = {
@@ -16,7 +16,6 @@ const LoanSearch = () => {
     const [loan, setLoan] = useState([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-
     const handleChange = (e) => {
         setState({
             ...state,
@@ -26,35 +25,30 @@ const LoanSearch = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(state.borrowerName === "" && state.loanAmount=== "" && state.loanNumber===""){
-            alert("Empty Search Fields");
-        }
-        else{
-            setIsSubmitted(true);
-        }
+        setIsSubmitted(true);
     };
 
     useEffect(() => {
         if (isSubmitted) {
-            Axios.post('http://localhost:8765/loan/loan-api/loan/search', state)
-                .then(response => {
+            let authcode = localStorage.getItem("auth");
+            Axios.post('http://localhost:8765/loan/loan-api/loan/search', state,{
+                headers: {
+                    'Authorization': `Bearer ${authcode}`
+                }
+            })
+                            .then(response => {
                     if (response.status === 200) {
                         let data = response.data;
-                        console.log(data);
-                        if(data.message === "No Search Results"){
-                            alert("No Search Results");
-                        }
-                        else{
                         setLoan(data);
                         setShowResults(true);
-                        }
                     }
                     else{
-                        
+                        alert("No Results Found!!!")
                     }
                 })
                 .catch(error => {
                     console.log(error)
+                    alert("Could not Search Loan Details!!!")
                 });
             setState(search);
             setIsSubmitted(false)
@@ -63,9 +57,8 @@ const LoanSearch = () => {
     }, [isSubmitted])
 
     return (
-        <>
-            <Header />
             <Container>
+                <Header />
                 <Row>
                     <Col className="d-flex justify-content-center mt-5">
                         <Card>
@@ -94,14 +87,12 @@ const LoanSearch = () => {
                     </Col>
                 </Row>
             </Container>
-        </>
 
     );
 }
 
 
 const LoanSearchTable = ({ loan }) => {
-    console.log(loan);
     return (
         <Table striped bordered hover>
             <thead>
@@ -110,20 +101,21 @@ const LoanSearchTable = ({ loan }) => {
                     <th>Borrower Name</th>
                     <th>Loan Number</th>
                     <th>Loan Amount</th>
-                    <th></th>
+                    {localStorage.getItem("roles") === "admin" ? <th></th> : null}
                 </tr>
             </thead>
             <tbody>
-                {loan.map((item) => {
-                     return ( 
-                    <tr key={item.loanId}>
-                        <td>{item.loanId}</td>
-                        <td>{item.borrowerName}</td>
-                        <td>{item.loanId}</td>
-                        <td>{item.loanAmount}</td>
-                        <td><Link to={{ pathname: '/update', state: { loanDetail: item } }}>Update</Link></td>
-                    </tr>
-                     )
+                {loan.map(loandetails => {
+                    return (
+                        <tr key={loandetails.loanId}>
+                            <td>{loandetails.loanId}</td>
+                            <td>{loandetails.borrowerName}</td>
+                            <td>{loandetails.loanId}</td>
+                            <td>{loandetails.loanAmount}</td>
+                           
+                            {localStorage.getItem("roles") === "admin" ? <td><Link to={{ pathname: "/update", loanDetailProps: { loandetails } }}>Update</Link></td>: null}
+                        </tr>
+                    )
                 })}
             </tbody>
         </Table>

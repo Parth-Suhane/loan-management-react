@@ -103,13 +103,19 @@ class AddLoanComponent extends Component{
                     }
 
                 };
-
+                let authcode = localStorage.getItem("auth");
                 
-
-        axios.post('http://localhost:8081/loan-api/addLoan',loan)
-        .then(res => {
-              this.setState({message : 'Loan created successfully.'});               
-         });
+       axios.post('http://localhost:8081/loan-api/addLoan',loan,{
+        headers: {
+            'Authorization': `bearer ${authcode}`
+        }
+        
+    })
+       .then(res => {
+        this.setState({message : 'Loan added successfully.'});
+        //this.props.history.push('/users');
+        
+           });
     }
 
     onChange = (e) =>

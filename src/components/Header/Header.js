@@ -8,6 +8,7 @@ const Header = () => (
             <Nav.Link href="/" >Logout</Nav.Link>
             <Nav.Link href="/search">Search Loan Page</Nav.Link>
             <Nav.Link href="/update">Update Loan</Nav.Link>
+            <Nav.Link href="/add-loan">Add Loan</Nav.Link>
         </Nav>
     </Navbar>
 );
