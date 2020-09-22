@@ -93,6 +93,12 @@ const LoanSearch = () => {
 
 
 const LoanSearchTable = ({ loan }) => {
+    if(loan.message === "No Search Results")
+    {
+        return(
+            <h4>No Search Results</h4>
+        )
+    }
     return (
         <Table striped bordered hover>
             <thead>
