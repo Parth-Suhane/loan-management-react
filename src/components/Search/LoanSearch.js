@@ -25,7 +25,12 @@ const LoanSearch = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setIsSubmitted(true);
+        if(state.borrowerName === "" && (state.loanAmount=== "" || state.loanAmount === '0') && (state.loanNumber==="" || state.loanNumber==='0')){
+            alert("Empty Search Fields");
+        }
+        else{
+            setIsSubmitted(true);
+        }
     };
 
     useEffect(() => {
